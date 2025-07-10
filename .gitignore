@@ -60,6 +60,10 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+banco.db
+.banco.db
+banco.db/
+
 
 # Flask stuff:
 instance/
@@ -209,4 +213,3 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-banco.db
