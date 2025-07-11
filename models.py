@@ -38,7 +38,7 @@ class Post(Base):
     comentarios = relationship("Comentario", back_populates="post")
     author = relationship("User", back_populates="posts")
 
-    def __init__(self, title, content, user_id, date_create=datetime.utcnow):
+    def __init__(self, title, content, user_id, date_create=datetime.utcnow()):
         self.title = title
         self.content = content
         self.user_id = user_id

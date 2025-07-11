@@ -9,7 +9,7 @@ class UserSchema(BaseModel):
     password: str
 
 
-class UserOut(BaseModel):
+class UserSchemaOut(BaseModel):
     id: int
     username: str
     email: str
@@ -22,7 +22,14 @@ class ComentarioSchema(BaseModel):
     id_post:int
     id_usuario:int | str | None
 
-class PostOut(BaseModel):
+
+class PostCreateSchema(BaseModel):
+    title: str
+    content: str
+    user_id: int
+
+
+class PostSchemaOut(BaseModel):
     id: int
     titulo:str
     conteudo:str
