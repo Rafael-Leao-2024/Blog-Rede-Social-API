@@ -68,6 +68,8 @@ sqlite:///banco.db
 # Flask stuff:
 instance/
 .webassets-cache
+banco.db
+*.db
 
 # Scrapy stuff:
 .scrapy

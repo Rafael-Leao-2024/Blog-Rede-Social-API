@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, String, ForeignKey, Integer, DateTime, Text
+from sqlalchemy import create_engine, Column, String, ForeignKey, Integer, DateTime, Text, Boolean
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from datetime import datetime
@@ -13,14 +13,16 @@ class User(Base):
     username = Column(String)
     email = Column(String, unique=True, nullable=True)
     password = Column(String, nullable=True)
+    desabilitado = Column(Boolean)
 
-    posts = relationship("Post", back_populates="author")
-    comentarios = relationship("Comentario", back_populates="user")
+    posts = relationship("Post", back_populates="author", cascade='all')
+    comentarios = relationship("Comentario", back_populates="user", cascade='all')
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, desabilitado=False):
         self.username = username
         self.email = email
         self.password = password
+        self.desabilitado = desabilitado
 
     def __repr__(self):
         return f"User(username={self.username}, email={self.email})"
@@ -35,7 +37,7 @@ class Post(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     date_create = Column(DateTime, default=datetime.now)
 
-    comentarios = relationship("Comentario", back_populates="post")
+    comentarios = relationship("Comentario", back_populates="post", cascade='all')
     author = relationship("User", back_populates="posts")
 
     def __init__(self, title, content, user_id, date_create=datetime.utcnow()):
@@ -80,3 +82,18 @@ def pegar_sessao():
     finally:
         session.close()
 
+
+def pegar_usuario(username):
+    try:
+        Session = sessionmaker(engine)
+        session = Session()
+        usuario = session.query(User).filter(User.username==username).first()
+        usuario.desabilitado = False
+        session.commit()
+        session.refresh(usuario)
+        return usuario
+    finally:
+        session.close()
+
+
+# print(pegar_usuario('RAFAEL'))

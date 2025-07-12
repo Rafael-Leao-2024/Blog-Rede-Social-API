@@ -1,12 +1,19 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 
+class TokenDadosSchema(BaseModel):
+    username: Optional[str]
+
+class TokenSchema(BaseModel):
+    access_token: str
+    token_type: str
 
 class UserSchema(BaseModel):
     username: str
     email: str
     password: str
+    desabilitado:bool | None = None
 
 
 class UserSchemaOut(BaseModel):
@@ -14,6 +21,7 @@ class UserSchemaOut(BaseModel):
     username: str
     email: str
     quantidade_posts: int
+    #desabilitado: bool
 
 
 class ComentarioSchema(BaseModel):
