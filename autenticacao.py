@@ -82,4 +82,4 @@ async def login(formulario: Annotated[OAuth2PasswordRequestForm, Depends()]):
     
     expiracao_token_acesso = timedelta(minutes=int(EXPIRACAO_TOKEN_ACESSO))
     token = criar_token_acesso(informacoes={'sub': usuario.username}, tempo_expiracao=expiracao_token_acesso)
-    return {"access_token": token, "token_type": "Bearer"}
+    return {"token_type": "Bearer", "access_token": token}

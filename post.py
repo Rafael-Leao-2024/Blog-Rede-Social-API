@@ -66,7 +66,7 @@ async def criar_post(post_create_schema:PostCreateSchema, session:Session=Depend
     return post
 
 
-@rotas_posts.delete('/{id_post}', status_code=status.HTTP_204_NO_CONTENT)
+@rotas_posts.delete('/delete/{id_post}')
 async def deletar_post(id_post:int, session:Session=Depends(pegar_sessao)):
     post = session.query(Post).filter(Post.id == id_post).first()
     if not post:

@@ -5,7 +5,7 @@ from comentario import rotas_comentario
 
 from autenticacao import rota_login
 
-app = FastAPI()
+app = FastAPI(description="Blog Rede Social API")
 
 
 app.include_router(rota_login)
