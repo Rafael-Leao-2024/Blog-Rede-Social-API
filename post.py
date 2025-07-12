@@ -29,7 +29,6 @@ async def posts(session:Session=Depends(pegar_sessao)):
             )
         for post in posts
         ]
-    print(posts[0].comentarios[0].user.username)
     return lista_posts
 
 

@@ -60,11 +60,11 @@ class Comentario(Base):
     user = relationship("User", back_populates="comentarios")
     post = relationship("Post", back_populates="comentarios")
 
-    def __init__(self, texto, data_criacao, id_post, id_usuario):
+    def __init__(self, texto, id_post, id_usuario, data_criacao=datetime.utcnow()):
         self.texto = texto
         self.data_criacao = data_criacao
         self.id_post = id_post
-        self.id_usuario
+        self.id_usuario = id_usuario
     
     def __repr__(self):
         return f"Comentario('texto= {self.texto}')"
@@ -80,16 +80,3 @@ def pegar_sessao():
     finally:
         session.close()
 
-# usuario = User("rafael", "rafael100@gmail.com", "1234")
-# post = Post('titulo', 'conteudo', 1, datetime.now())
-
-# session.add(post)
-# session.add(usuario)
-
-# session.add(comentario)
-
-# session.commit()
-
-# todos = session.query(User).all()[0]
-
-# print(todos.posts)
