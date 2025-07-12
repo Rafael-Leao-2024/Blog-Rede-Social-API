@@ -63,7 +63,7 @@ db.sqlite3-journal
 banco.db
 .banco.db
 banco.db/
-
+sqlite:///banco.db
 
 # Flask stuff:
 instance/
