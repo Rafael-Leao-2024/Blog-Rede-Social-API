@@ -20,16 +20,20 @@ class UserSchemaOut(BaseModel):
     id: int
     username: str
     email: str
-    quantidade_posts: int
-    #desabilitado: bool
+    desabilitado: bool
 
 
 class ComentarioSchema(BaseModel):
     texto:str
     data_criacao:datetime
     id_post:int
-    id_usuario:int | str | None
 
+class ComentarioSchemaOut(ComentarioSchema):
+    id_usuario:int
+
+class ComentarioSchemaOutDadosUser(ComentarioSchema):
+    user: UserSchemaOut
+   
 
 class PostCreateSchema(BaseModel):
     title: str
@@ -44,7 +48,7 @@ class PostSchemaOut(BaseModel):
     id_usuario:int
     date_create: datetime
     quantidade_comentarios:int
-    comentarios:List[ComentarioSchema]
+    comentarios:List[ComentarioSchemaOut]
 
 class PostOutUnique(BaseModel):
     id: int

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, status, HTTPException
-from schema import PostSchemaOut, PostOutUnique, PostCreateSchema
-from typing import List, Annotated
-from models import Post, pegar_sessao, User
+from .schema import PostSchemaOut, PostOutUnique, PostCreateSchema
+from typing import List
+from .models import Post, pegar_sessao, User
 from sqlalchemy.orm import Session
-from autenticacao import pegar_usuario_atual_ativo
+from .autenticacao import pegar_usuario_atual_ativo
 
 
 rotas_posts = APIRouter(prefix='/posts', tags=['Postagem'], dependencies=[Depends(pegar_usuario_atual_ativo)])
@@ -24,7 +24,7 @@ async def posts(session:Session=Depends(pegar_sessao)):
                     texto=comentario.texto,
                      data_criacao=comentario.data_criacao,
                      id_post=comentario.id_post,
-                     id_usuario= comentario.id_usuario if comentario.id_usuario == None else comentario.user.id
+                     id_usuario= comentario.id_usuario
                      )
                 for comentario in post.comentarios]
             )

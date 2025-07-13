@@ -1,10 +1,9 @@
-from schema import UserSchema, TokenDadosSchema, TokenSchema
+from .schema import TokenDadosSchema, TokenSchema
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated, Optional
-from models import pegar_sessao, User, pegar_usuario
-from sqlalchemy.orm import Session
-from werkzeug.security import check_password_hash, generate_password_hash
+from .models import User, pegar_usuario
+from werkzeug.security import check_password_hash
 from jose import jwt, JWTError 
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
@@ -82,4 +81,4 @@ async def login(formulario: Annotated[OAuth2PasswordRequestForm, Depends()]):
     
     expiracao_token_acesso = timedelta(minutes=int(EXPIRACAO_TOKEN_ACESSO))
     token = criar_token_acesso(informacoes={'sub': usuario.username}, tempo_expiracao=expiracao_token_acesso)
-    return {"token_type": "Bearer", "access_token": token}
+    return {"token_type": "Bearer", "access_token": token }

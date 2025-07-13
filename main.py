@@ -1,9 +1,10 @@
 from fastapi import FastAPI
-from post import rotas_posts
-from usuario import rotas_usuarios
-from comentario import rotas_comentario
+from blog.post import rotas_posts
+from blog.usuario import rotas_usuarios
+from blog.comentario import rotas_comentario
 
-from autenticacao import rota_login
+from blog.autenticacao import rota_login
+
 
 app = FastAPI(description="Blog Rede Social API")
 

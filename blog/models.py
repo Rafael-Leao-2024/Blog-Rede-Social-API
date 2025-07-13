@@ -59,7 +59,7 @@ class Comentario(Base):
     id_post = Column(Integer, ForeignKey('posts.id'))
     id_usuario = Column(Integer, ForeignKey('users.id'))
 
-    user = relationship("User", back_populates="comentarios")
+    user = relationship("User")
     post = relationship("Post", back_populates="comentarios")
 
     def __init__(self, texto, id_post, id_usuario, data_criacao=datetime.utcnow()):
@@ -88,12 +88,7 @@ def pegar_usuario(username):
         Session = sessionmaker(engine)
         session = Session()
         usuario = session.query(User).filter(User.username==username).first()
-        usuario.desabilitado = False
-        session.commit()
-        session.refresh(usuario)
         return usuario
     finally:
         session.close()
 
-
-# print(pegar_usuario('RAFAEL'))
