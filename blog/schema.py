@@ -1,13 +1,15 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Optional
 from datetime import datetime
 
 class TokenDadosSchema(BaseModel):
     username: Optional[str]
 
+
 class TokenSchema(BaseModel):
     access_token: str
     token_type: str
+
 
 class UserSchema(BaseModel):
     username: str
@@ -23,37 +25,26 @@ class UserSchemaOut(BaseModel):
     desabilitado: bool
 
 
-class ComentarioSchema(BaseModel):
+class ComentarioCreateSchema(BaseModel):
     texto:str
     data_criacao:datetime
     id_post:int
 
-class ComentarioSchemaOut(ComentarioSchema):
-    id_usuario:int
 
-class ComentarioSchemaOutDadosUser(ComentarioSchema):
+class ComentarioSchemaOutDadosUser(ComentarioCreateSchema):
+    id_usuario:int
     user: UserSchemaOut
    
 
 class PostCreateSchema(BaseModel):
     title: str
     content: str
-    user_id: int
 
 
 class PostSchemaOut(BaseModel):
     id: int
-    titulo:str
-    conteudo:str
-    id_usuario:int
+    title:str
+    content:str
+    user_id:int
+    author: UserSchemaOut
     date_create: datetime
-    quantidade_comentarios:int
-    comentarios:List[ComentarioSchemaOut]
-
-class PostOutUnique(BaseModel):
-    id: int
-    titulo:str
-    conteudo:str
-    id_usuario:int
-    date_create: datetime
-    comentarios:List[ComentarioSchema]

@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine, Column, String, ForeignKey, Integer, DateTime, Text, Boolean
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from datetime import datetime
 
 engine = create_engine('sqlite:///banco.db')
@@ -15,8 +14,8 @@ class User(Base):
     password = Column(String, nullable=True)
     desabilitado = Column(Boolean)
 
-    posts = relationship("Post", back_populates="author", cascade='all')
-    comentarios = relationship("Comentario", back_populates="user", cascade='all')
+    posts = relationship("Post", back_populates="author", cascade='all, delete')
+    comentarios = relationship("Comentario", back_populates="user", cascade='all, delete')
 
     def __init__(self, username, email, password, desabilitado=False):
         self.username = username
@@ -37,7 +36,7 @@ class Post(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     date_create = Column(DateTime, default=datetime.now)
 
-    comentarios = relationship("Comentario", back_populates="post", cascade='all')
+    comentarios = relationship("Comentario", back_populates="post", cascade='all, delete')
     author = relationship("User", back_populates="posts")
 
     def __init__(self, title, content, user_id, date_create=datetime.utcnow()):

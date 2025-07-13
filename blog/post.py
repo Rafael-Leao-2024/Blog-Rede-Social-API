@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, status, HTTPException
-from .schema import PostSchemaOut, PostOutUnique, PostCreateSchema
 from typing import List
-from .models import Post, pegar_sessao, User
 from sqlalchemy.orm import Session
+from .models import Post, pegar_sessao, User
+from .schema import PostSchemaOut, PostCreateSchema
 from .autenticacao import pegar_usuario_atual_ativo
 
 
@@ -11,59 +11,25 @@ rotas_posts = APIRouter(prefix='/posts', tags=['Postagem'], dependencies=[Depend
 
 @rotas_posts.get('/', response_model=List[PostSchemaOut])
 async def posts(session:Session=Depends(pegar_sessao)):
-    posts = session.query(Post).all()
-    lista_posts = [
-        dict(id=post.id, 
-            titulo=post.title,
-            conteudo=post.content, 
-            id_usuario=post.user_id, 
-            date_create=post.date_create, 
-            quantidade_comentarios=len(post.comentarios),
-            comentarios=[
-                dict(
-                    texto=comentario.texto,
-                     data_criacao=comentario.data_criacao,
-                     id_post=comentario.id_post,
-                     id_usuario= comentario.id_usuario
-                     )
-                for comentario in post.comentarios]
-            )
-        for post in posts
-        ]
-    return lista_posts
+    todas_postagens = session.query(Post).all()
+    return todas_postagens
 
 
-@rotas_posts.get('/{id_post}', response_model=PostOutUnique)
+@rotas_posts.get('/{id_post}', response_model=PostSchemaOut)
 async def pegar_post(id_post:int, session:Session=Depends(pegar_sessao)):
-    p = session.query(Post).filter(Post.id == id_post).first()
-    if p is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post nao encontrado!")
-    dicionario_post = dict(id=p.id, titulo=p.title, conteudo=p.content, id_usuario=p.user_id, date_create=p.date_create, comentarios= [dict(
-                    texto=comentario.texto,
-                     data_criacao=comentario.data_criacao,
-                     id_post=comentario.id_post,
-                     id_usuario= comentario.id_usuario if comentario.id_usuario == None else comentario.user.id
-                     ) for comentario in p.comentarios])
-    return dicionario_post
+    postagem = session.query(Post).filter(Post.id == id_post).first()
+    if postagem is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Postagem nao encontrado!")
+    return postagem
 
 
-@rotas_posts.post('/criar-post', status_code=status.HTTP_201_CREATED, response_model=PostOutUnique)
+@rotas_posts.post('/criar-post', status_code=status.HTTP_201_CREATED, response_model=PostSchemaOut)
 async def criar_post(post_create_schema:PostCreateSchema, session:Session=Depends(pegar_sessao), usuario:User=Depends(pegar_usuario_atual_ativo)):
-    post_dict = post_create_schema.model_dump()
-    p = Post(**post_dict)
-    p.user_id = usuario.id
-
-    session.add(p)
+    postagem = Post(title=post_create_schema.title, content=post_create_schema.content, user_id=usuario.id)
+    session.add(postagem)
     session.commit()
-    session.refresh(p)
-
-    post = dict(id=p.id, titulo=p.title, conteudo=p.content, id_usuario=p.user_id, date_create=p.date_create, comentarios= [dict(
-                    texto=comentario.texto,
-                     data_criacao=comentario.data_criacao,
-                     id_post=comentario.id_post,
-                     id_usuario= comentario.id_usuario if comentario.id_usuario == None else comentario.user.id
-                     ) for comentario in p.comentarios])
-    return post
+    session.refresh(postagem)
+    return postagem
 
 
 @rotas_posts.delete('/delete/{id_post}')

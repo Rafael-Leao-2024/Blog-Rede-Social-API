@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, status, HTTPException
+from werkzeug.security import generate_password_hash
 from sqlalchemy.orm import Session
+from typing import List
 from .models import pegar_sessao, User
 from .schema import UserSchemaOut, UserSchema
-from typing import List
-from werkzeug.security import generate_password_hash
 
 
 rotas_usuarios = APIRouter(prefix='/usuarios', tags=['Usuarios'])

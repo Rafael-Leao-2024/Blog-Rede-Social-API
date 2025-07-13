@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, status, HTTPException
-from .models import Comentario, User, pegar_sessao
 from sqlalchemy.orm import Session
-from .schema import ComentarioSchema, ComentarioSchemaOutDadosUser
-from .autenticacao import pegar_usuario_atual_ativo
 from typing import List
+from .schema import ComentarioCreateSchema, ComentarioSchemaOutDadosUser
+from .autenticacao import pegar_usuario_atual_ativo
+from .models import Comentario, User, pegar_sessao
 
 rotas_comentario = APIRouter(prefix='/comentarios', tags=['Comentarios'])
 
@@ -15,7 +15,7 @@ async def comentarios(session:Session=Depends(pegar_sessao), usuario:User=Depend
 
 
 @rotas_comentario.post('/criar-comentario', status_code=status.HTTP_201_CREATED)
-async def comentar_post(comentario_schema:ComentarioSchema, session: Session=Depends(pegar_sessao), usuario:User=Depends(pegar_usuario_atual_ativo)):
+async def comentar_post(comentario_schema:ComentarioCreateSchema, session: Session=Depends(pegar_sessao), usuario:User=Depends(pegar_usuario_atual_ativo)):
     comentario = Comentario(texto=comentario_schema.texto, data_criacao=comentario_schema.data_criacao, id_post=comentario_schema.id_post, id_usuario=usuario.id)
     session.add(comentario)
     session.commit()
