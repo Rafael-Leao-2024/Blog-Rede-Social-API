@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status, HTTPException, Query
 from typing import List
 from sqlalchemy.orm import Session
 from .models import Post, pegar_sessao, User
@@ -12,6 +12,21 @@ rotas_posts = APIRouter(prefix='/posts', tags=['Postagem'], dependencies=[Depend
 @rotas_posts.get('/', response_model=List[PostSchemaOut])
 async def posts(session:Session=Depends(pegar_sessao)):
     todas_postagens = session.query(Post).all()
+    return todas_postagens
+
+
+@rotas_posts.get('/posts_paginacao', response_model=List[PostSchemaOut])
+async def posts_paginacao(
+    session: Session = Depends(pegar_sessao),
+    pagina: int = Query(default=1, ge=1, description="Número da página"),
+    limite: int = Query(default=10, le=10, ge=1, description="Itens por página (máx. 10)")
+):
+    # Calcular o offset
+    offset = (pagina - 1) * limite
+    
+    # Consulta com paginação
+    todas_postagens = session.query(Post).offset(offset).limit(limite).all()
+    
     return todas_postagens
 
 

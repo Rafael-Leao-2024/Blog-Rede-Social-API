@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 class TokenDadosSchema(BaseModel):
@@ -45,6 +45,6 @@ class PostSchemaOut(BaseModel):
     id: int
     title:str
     content:str
-    user_id:int
     author: UserSchemaOut
     date_create: datetime
+    comentarios: List[ComentarioSchemaOutDadosUser]
