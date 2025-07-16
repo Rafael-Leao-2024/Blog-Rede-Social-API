@@ -9,13 +9,20 @@ rotas_comentario = APIRouter(prefix='/comentarios', tags=['Comentarios'])
 
 
 @rotas_comentario.get('/', response_model=List[ComentarioSchemaOutDadosUser])
-async def comentarios(session:Session=Depends(pegar_sessao), usuario:User=Depends(pegar_usuario_atual_ativo)):
+async def comentarios(
+    session:Session=Depends(pegar_sessao), 
+    usuario:User=Depends(pegar_usuario_atual_ativo)
+    ):
     comentarios = session.query(Comentario).filter(Comentario.id_usuario==usuario.id).all()
     return comentarios
 
 
 @rotas_comentario.post('/criar-comentario', status_code=status.HTTP_201_CREATED)
-async def comentar_post(comentario_schema:ComentarioCreateSchema, session: Session=Depends(pegar_sessao), usuario:User=Depends(pegar_usuario_atual_ativo)):
+async def comentar_post(
+    comentario_schema:ComentarioCreateSchema, 
+    session: Session=Depends(pegar_sessao), 
+    usuario:User=Depends(pegar_usuario_atual_ativo)
+    ):
     comentario = Comentario(texto=comentario_schema.texto, data_criacao=comentario_schema.data_criacao, id_post=comentario_schema.id_post, id_usuario=usuario.id)
     session.add(comentario)
     session.commit()
@@ -23,15 +30,18 @@ async def comentar_post(comentario_schema:ComentarioCreateSchema, session: Sessi
     return comentario
 
 @rotas_comentario.delete('/delete-comentario')
-async def deletar_comentario(id_comentario: int,
-                             usuario: User=Depends(pegar_usuario_atual_ativo),
-                             session: Session=Depends(pegar_sessao)
-                            ):
+async def deletar_comentario(
+    id_comentario: int,
+    usuario: User=Depends(pegar_usuario_atual_ativo),
+    session: Session=Depends(pegar_sessao)
+    ):
     comentario = session.query(Comentario).filter(Comentario.id==id_comentario).first()
+    
     if not comentario:
         raise HTTPException(status_code=404, detail="comentario nao encontrado")
     if comentario.id_usuario != usuario.id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Voce nao tem permissao para deletar esse comentario")
+    
     session.delete(comentario)
     session.commit()
     return {"mensgem": f"comentario de ID {comentario.id} deletado com sucesso"}

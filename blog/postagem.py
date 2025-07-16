@@ -21,12 +21,8 @@ async def posts_paginacao(
     pagina: int = Query(default=1, ge=1, description="Número da página"),
     limite: int = Query(default=10, le=10, ge=1, description="Itens por página (máx. 10)")
 ):
-    # Calcular o offset
-    offset = (pagina - 1) * limite
-    
-    # Consulta com paginação
-    todas_postagens = session.query(Post).offset(offset).limit(limite).all()
-    
+    offset = (pagina - 1) * limite    
+    todas_postagens = session.query(Post).offset(offset).limit(limite).all()    
     return todas_postagens
 
 
@@ -39,7 +35,11 @@ async def pegar_post(id_post:int, session:Session=Depends(pegar_sessao)):
 
 
 @rotas_posts.post('/criar-post', status_code=status.HTTP_201_CREATED, response_model=PostSchemaOut)
-async def criar_post(post_create_schema:PostCreateSchema, session:Session=Depends(pegar_sessao), usuario:User=Depends(pegar_usuario_atual_ativo)):
+async def criar_post(
+    post_create_schema:PostCreateSchema, 
+    session:Session=Depends(pegar_sessao), 
+    usuario:User=Depends(pegar_usuario_atual_ativo)
+    ):
     postagem = Post(title=post_create_schema.title, content=post_create_schema.content, user_id=usuario.id)
     session.add(postagem)
     session.commit()

@@ -27,7 +27,9 @@ async def pegar_usuario(id_usuario: int, session:Session = Depends(pegar_sessao)
 async def criar_usuario(usuario_schema:UserSchema, session:Session=Depends(pegar_sessao)):
     usuario_schema.password = generate_password_hash(usuario_schema.password)
     usuario = User(**usuario_schema.model_dump())
+
     session.add(usuario)
     session.commit()
     session.refresh(usuario)
+    
     return usuario

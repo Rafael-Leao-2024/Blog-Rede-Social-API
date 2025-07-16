@@ -13,9 +13,9 @@ from main import oauth2scheme
 
 load_dotenv()
 
-ALGORITHM = os.getenv('ALGORITHM')
-SECRET_KEY = os.getenv('SECRET_KEY')
 EXPIRACAO_TOKEN_ACESSO = os.getenv("EXPIRACAO_TOKEN_ACESSO")
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALGORITHM = os.getenv('ALGORITHM')
 
 rota_login = APIRouter(prefix='/login', tags=['Login'])
 
@@ -62,7 +62,7 @@ async def pegar_usuario_atual(token: Annotated[str, Depends(oauth2scheme)]):
 
 async def pegar_usuario_atual_ativo(usuario_atual: User = Depends(pegar_usuario_atual)):
     if usuario_atual.desabilitado:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Usuario Desabilitado")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Usuario Desabilitado Por favor contate o ADMIN")
     return usuario_atual
 
 
