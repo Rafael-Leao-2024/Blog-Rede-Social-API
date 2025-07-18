@@ -24,7 +24,7 @@ def autenticar_usuario(username:str, password:str):
     usuario = pegar_usuario(username=username)
     if not usuario:
         return False
-    if not check_password_hash(usuario.password, password):
+    if not check_password_hash(pwhash=usuario.password, password=password):
         return False
     return usuario
 

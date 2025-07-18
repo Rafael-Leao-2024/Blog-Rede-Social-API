@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
+
 class TokenDadosSchema(BaseModel):
     username: Optional[str]
 
@@ -29,6 +30,15 @@ class ComentarioCreateSchema(BaseModel):
     texto:str
     data_criacao:datetime
     id_post:int
+    
+
+class UpdateSchemaComentario(BaseModel):
+    texto: str
+
+
+class ComentarioUpdateSchemaOut(BaseModel):
+    comentario_antigo:str
+    novo_comentario:str 
 
 
 class ComentarioSchemaOutDadosUser(ComentarioCreateSchema):
@@ -39,6 +49,10 @@ class ComentarioSchemaOutDadosUser(ComentarioCreateSchema):
 class PostCreateSchema(BaseModel):
     title: str
     content: str
+
+
+class UpdatePostSchema(PostCreateSchema):
+    pass
 
 
 class PostSchemaOut(BaseModel):

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, HTTPException, Query
 from typing import List
 from sqlalchemy.orm import Session
 from .models import Post, pegar_sessao, User
-from .schema import PostSchemaOut, PostCreateSchema
+from .schema import PostSchemaOut, PostCreateSchema, UpdatePostSchema
 from .autenticacao import pegar_usuario_atual_ativo
 
 
@@ -45,6 +45,27 @@ async def criar_post(
     session.commit()
     session.refresh(postagem)
     return postagem
+
+@rotas_posts.put('/editar-post/{id_post}', response_model=PostSchemaOut)
+async def editar_post(
+    id_post: int,
+    updatepostschema: UpdatePostSchema,
+    session:Session=Depends(pegar_sessao),
+    usuario:User=Depends(pegar_usuario_atual_ativo)
+    ):
+    post = session.query(Post).filter(Post.id == id_post).first()
+    if post.user_id == usuario.id:
+        if updatepostschema.title != "string":
+            post.title = updatepostschema.title
+        if updatepostschema.content != "string":
+            post.content = updatepostschema.content
+        session.commit()
+        session.refresh(post)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Voce nao tem acesso de modificar post de outro usuario")
+    return post
 
 
 @rotas_posts.delete('/delete/{id_post}')
